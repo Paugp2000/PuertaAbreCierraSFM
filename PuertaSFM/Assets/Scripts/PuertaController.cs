@@ -8,8 +8,8 @@ public class PuertaController : MonoBehaviour
 {
     [SerializeField] GameObject puertaIzq;
     [SerializeField] GameObject puertaDer;
-    public enum PuertaState { OPEN, OPENING, CLOSED, CLOSENING }
-    PuertaState state = PuertaState.CLOSED;
+    public enum PuertaState { OPEN, OPENING, CLOSED, CLOSENING, WAIT }
+    PuertaState state = PuertaState.WAIT;
     public Vector3 rotationPuerta = new Vector3(0, 0, 1);
     private void Update()
     {
@@ -50,7 +50,11 @@ public class PuertaController : MonoBehaviour
         puertaIzq.transform.rotation = Quaternion.AngleAxis(0, rotationPuerta);
         puertaDer.transform.rotation = Quaternion.AngleAxis(0, rotationPuerta);
         Debug.Log("Puerta cerrada");
-        state = PuertaState.OPEN;
+        state = PuertaState.WAIT;
+    }
+    private void idleDoor()
+    {
+
     }
     private void UpdateState()
     {
@@ -62,9 +66,13 @@ public class PuertaController : MonoBehaviour
             case PuertaState.OPENING:
                 break;
             case PuertaState.CLOSED:
+                Invoke("puertaCerrada", 4f);
                 break;
             case PuertaState.CLOSENING:
                 Invoke("closeningDoor", 4f);
+                break;
+            case PuertaState.WAIT:
+                Invoke("idleDoor", 2f);
                 break;
         }
     }
